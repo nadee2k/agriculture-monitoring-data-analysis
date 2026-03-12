@@ -1,3 +1,0 @@
-- NASA POWER: fallback synthetic data (network blocked)
-- FAOSTAT: fallback synthetic data (network blocked)
-- Primary dataset: reproducible demo generator

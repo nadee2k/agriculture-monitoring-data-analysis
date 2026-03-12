@@ -5,6 +5,8 @@ This project validates the statement:
 > **"Farmers who monitor their farms regularly respond better to challenges."**
 
 using secondary climate/yield data and a primary-style farm monitoring dataset.
+> Note: Generated files under `data/raw/`, `data/processed/`, and `reports/key_results.md` are not versioned to avoid merge conflicts. Recreate them with `./run_pipeline.sh`.
+
 
 ## Datasets used
 - **NASA POWER** monthly climate variables for Sri Lanka (temperature, precipitation, solar radiation).
