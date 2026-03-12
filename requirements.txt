@@ -1,0 +1,2 @@
+# No third-party dependencies required.
+# Project runs with Python 3 standard library only.
