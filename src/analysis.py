@@ -153,6 +153,7 @@ def lo6_bayesian(demo: list[dict]) -> dict:
     a_post = 1 + success
     b_post = 1 + n - success
 
+
     samples = [random.betavariate(a_post, b_post) for _ in range(20000)]
     samples.sort()
     ci_low = samples[int(0.025 * len(samples))]

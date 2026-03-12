@@ -6,6 +6,7 @@ This project validates the statement:
 
 using secondary climate/yield data and a primary-style farm monitoring dataset.
 
+
 ## Datasets used
 - **NASA POWER** monthly climate variables for Sri Lanka (temperature, precipitation, solar radiation).
 - **FAOSTAT** annual crop yield series (Rice paddy, Sri Lanka).
@@ -46,3 +47,4 @@ python src/analysis.py
 ## Notes
 - Country/item codes can be changed in `src/data_collection.py` for different crops/countries.
 - Replace `data/raw/farm_monitoring_primary_demo.csv` with your real primary data for final submission.
+
