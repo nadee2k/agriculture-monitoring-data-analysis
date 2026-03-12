@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Generated outputs (recreate via ./run_pipeline.sh)
+data/raw/*.csv
+data/raw/data_sources.txt
+data/processed/*.csv
+reports/key_results.md
+reports/final_conclusion.txt
