@@ -5,7 +5,6 @@ This project validates the statement:
 > **"Farmers who monitor their farms regularly respond better to challenges."**
 
 using secondary climate/yield data and a primary-style farm monitoring dataset.
-> Note: Generated files under `data/raw/`, `data/processed/`, and `reports/key_results.md` are not versioned to avoid merge conflicts. Recreate them with `./run_pipeline.sh`.
 
 
 ## Datasets used
@@ -49,32 +48,3 @@ python src/analysis.py
 - Country/item codes can be changed in `src/data_collection.py` for different crops/countries.
 - Replace `data/raw/farm_monitoring_primary_demo.csv` with your real primary data for final submission.
 
-## How to get output (quick)
-Run everything with one command:
-
-```bash
-./run_pipeline.sh
-```
-
-Or run step-by-step:
-
-```bash
-python src/data_collection.py
-python src/analysis.py
-```
-
-Generated outputs:
-- `data/raw/nasa_power_sri_lanka_monthly.csv`
-- `data/raw/faostat_sri_lanka_rice_yield.csv`
-- `data/raw/farm_monitoring_primary_demo.csv`
-- `data/raw/data_sources.txt`
-- `data/processed/analysis_results.csv`
-- `reports/key_results.md`
-
-To view outputs quickly:
-
-```bash
-cat data/raw/data_sources.txt
-head -n 20 data/processed/analysis_results.csv
-cat reports/key_results.md
-```
