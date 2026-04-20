@@ -101,19 +101,24 @@ Monitoring shows **clear practical improvement**, but statistical significance i
 Model: OLS Regression
 
 [
-YieldLoss = \beta_0 + \beta_1(Monitoring) + \beta_2(ClimateRisk) + \epsilon
+YieldLoss = \beta_0 + \beta_1\log(Fertilizer) + \beta_2(Irrigation) + \beta_3(Rainfall) + \beta_4(Temperature) + \epsilon
 ]
 
-| Variable         | Coefficient | Interpretation       |
-| ---------------- | ----------- | -------------------- |
-| Monitoring Index | -0.95       | Reduces yield loss   |
-| Climate Risk     | +2.06       | Increases yield loss |
+| Variable           | Coefficient | Interpretation (in current model)                 |
+| ------------------ | ----------- | ------------------------------------------------- |
+| Intercept          | +162.090809 | Baseline model offset                             |
+| log(Fertilizer)    | -9.278539   | Higher fertilizer (log-scale) is linked to lower loss |
+| Irrigation Area    | -0.000018   | Larger irrigation area is linked to slightly lower loss |
+| Rainfall           | -1.328369   | Higher annual rainfall is linked to lower loss    |
+| Temperature        | -0.989384   | Higher annual temperature is linked to lower loss |
 
-* R² ≈ 0.021
-* MAE ≈ 4.40
+
+* R² ≈ 0.194
+* MAE ≈ 3.82
+
 
 📌 Insight:
-Model confirms expected relationships, but **low explanatory power indicates missing variables**.
+Model captures part of the variation in yield loss, but **explanatory power is still modest and likely affected by omitted variables and small sample size**.
 
 ---
 
@@ -151,8 +156,8 @@ There is strong probabilistic evidence that **monitoring interventions are effec
 ## 📈 Key Findings
 
 * Monitoring reduces yield loss **in practice**, though statistical significance is limited
-* Climate risk consistently **increases yield loss**
-* Regression confirms direction of effects but lacks explanatory strength
+* Climate signals affect yield loss, though the direction and strength depend on model specification
+* Regression provides directional associations with modest explanatory strength
 * Forecasting provides **usable medium-term predictions**
 * Bayesian analysis supports **high probability of monitoring effectiveness**
 
