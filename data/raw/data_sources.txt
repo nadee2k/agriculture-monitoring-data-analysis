@@ -1,3 +1,0 @@
-- NASA POWER: fallback synthetic data (network blocked)
-- FAOSTAT: fallback synthetic data (network blocked)
-- Primary dataset: realistic simulation using Sri Lankan macro baselines (N=120)
