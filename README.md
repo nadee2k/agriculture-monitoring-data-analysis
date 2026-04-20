@@ -1,220 +1,106 @@
-# Agricultural Monitoring and Farm Resilience Analysis (Sri Lanka)
+🌾 Agricultural Monitoring & Farm Resilience Analysis (Sri Lanka)
+📌 Project Overview
 
-## Problem Statement
+This project investigates how farm monitoring practices influence agricultural productivity and resilience in Sri Lanka. Using real-world secondary datasets from FAOSTAT and NASA POWER, the study applies statistical modelling, hypothesis testing, regression analysis, time series forecasting, and Bayesian inference to evaluate agricultural performance under environmental and management factors.
 
-This project investigates the critical hypothesis:
+The goal is to determine whether improved farm monitoring practices are associated with better crop yield and resilience against climate variability.
 
-> **"Farms with regular irrigation and fertilizer management show better yield outcomes despite climate challenges."**
+🎯 Research Statement
 
-### Context
-- Sri Lankan agriculture faces significant climate variability (rainfall, temperature fluctuations)
-- Farm management intensity (monitoring frequency, input application) affects resilience
-- Understanding the monitoring-yield relationship informs policy on farm resilience strategies
+Farmers who monitor their farms regularly respond better to agricultural challenges.
 
----
+This statement is evaluated using:
 
-## Dataset Sources
+Descriptive Analytics
+Inferential Statistics
+Predictive Modelling
+📊 Learning Outcomes Coverage
+LO	Area
+LO1	Probability distributions (Gamma, Normal)
+LO2	Hypothesis testing (t-test, significance testing)
+LO3	Regression analysis (multiple linear regression)
+LO4	Exponential family distributions (Poisson, Exponential)
+LO5	Time series forecasting (ARIMA model)
+LO6	Bayesian inference (posterior estimation)
+📂 Datasets Used
+🌱 Agricultural Data (FAOSTAT)
+Crop Yield (Rice, Sri Lanka)
+Fertilizer Usage (Nitrogen-based inputs)
+Irrigation Area
+Area Harvested
+🌦 Climate Data (NASA POWER)
+Annual Rainfall (mm)
+Average Temperature (°C)
+🔧 Data Engineering
 
-### 1. **FAOSTAT Data** (Production & Inputs)
-- **Rice Yield**: Annual yield (kg/ha) for Sri Lanka, 2000-2024
-- **Fertilizer Use**: Annual nitrogen, phosphate, potash application (tonnes), 2020-2023
-- **Irrigation Area**: Land area equipped for irrigation (1000 ha), 2020-2023
-- Source: FAO Statistical Database (FAOSTAT)
+A Monitoring Index was constructed to represent farm management intensity:
 
-### 2. **NASA POWER Data** (Climate)
-- **Temperature**: Monthly mean temperature (°C), 2000-2024
-- **Precipitation**: Monthly total rainfall (mm/day), 2000-2024
-- **Solar Radiation**: Monthly solar irradiance (MJ/m²/day), 2000-2024
-- Location: Sri Lanka (7.8731°N, 80.7718°E)
-- Source: NASA POWER API (Agro-Climatic Data)
+Monitoring Index = (Fertilizer Use + Irrigation Area) / Area Harvested
 
----
+This proxy represents the level of agricultural monitoring and input intensity.
 
-## Methodology
+📊 Methodology
+1. Descriptive Analytics
+Mean, variance, and distribution analysis
+Trend analysis of yield and climate variables
+Visualization using boxplots and histograms
+2. Inferential Statistics
+Hypothesis testing (t-test / regression significance)
+Evaluation of monitoring impact on yield
+3. Regression Analysis
 
-### Step 1: Data Loading & Exploration
-- Load FAOSTAT crop, fertilizer, irrigation data
-- Load NASA POWER climate data
-- Validate data consistency, identify missing values
+Multiple Linear Regression model:
 
-### Step 2: Data Cleaning
-- Handle missing values (forward-fill, interpolation)
-- Standardize units (e.g., fertilizer tonnes → kg/ha)
-- Align temporal dimensions (annual vs. monthly aggregation)
+Yield = β0 + β1(Monitoring Index) + β2(Rainfall) + β3(Temperature)
+4. Probability Distributions
+Gamma distribution for response times
+Poisson distribution for event frequency
+Exponential distribution for time intervals
+5. Time Series Forecasting
+ARIMA model applied on yield data
+Forecast accuracy evaluated using MAPE
+6. Bayesian Analysis
+Posterior estimation of monitoring effectiveness
+95% credible intervals computed for effect size
+📈 Key Results Summary
+Monitoring Index shows positive relationship with crop yield
+Climate variables significantly affect agricultural output
+Forecasting model achieved high predictive accuracy (low MAPE)
+Bayesian inference confirms positive but uncertain effect of monitoring
+⚠️ Limitations
+Some agricultural variables are proxy-based due to lack of direct monitoring data
+Model performance is limited by small time-series sample size
+Additional variables such as soil quality and pest infestation were not included
+🚀 Tools & Technologies
+Python (Pandas, NumPy)
+Scikit-learn
+Statsmodels
+Matplotlib / Seaborn
+Bayesian modeling tools
+📌 Project Structure
+data/
+ ├── raw/
+ ├── processed/
 
-### Step 3: Feature Engineering
-**Core Feature: Monitoring Index**
-```
-monitoring_index = (fertilizer_intensity + irrigation_ratio) / 2
+notebooks/
+ ├── EDA.ipynb
+ ├── Hypothesis_Testing.ipynb
+ ├── Regression_Model.ipynb
+ ├── Time_Series.ipynb
+ ├── Bayesian_Analysis.ipynb
 
-where:
-  fertilizer_intensity = (total_fertilizer_use) / area_harvested
-  irrigation_ratio = irrigation_area / area_harvested
-```
+src/
+ ├── data_cleaning.py
+ ├── feature_engineering.py
+ ├── modeling.py
 
-**Climate Risk Index**
-```
-climate_risk = normalize(mean_temp_anomaly + precip_coefficient)
-```
+results/
+ ├── graphs/
+ ├── outputs/
+🧠 Key Insight
 
-**Response Quality**
-```
-effective_response = 1 if yield_growth > expected_given_climate else 0
-```
+Agricultural productivity is not solely dependent on environmental conditions but is significantly influenced by farm management intensity, represented through the constructed Monitoring Index.
 
-### Step 4: Exploratory Data Analysis (EDA)
-- Distributions of monitoring index, yield, climate variables
-- Correlation heatmaps
-- Time-series trends
+📌 Conclusion
 
-### Step 5: Hypothesis Testing
-- **H1**: Farms with high monitoring index have lower yield variance
-- **H2**: Monitoring effect persists after climate control
-
-### Step 6: Regression Modeling
-```
-yield ~ monitoring_index + temperature + rainfall + year
-```
-- Ordinary Least Squares (OLS) estimation
-- Model diagnostics (R², residuals, collinearity)
-
-### Step 7: Time Series Forecasting
-- Holt-Winters exponential smoothing on annual yield
-- MAPE evaluation on held-out test set
-
-### Step 8: Bayesian Inference
-- Prior: Beta(1, 1) for P(monitoring benefit)
-- Likelihood: observed success rate
-- Posterior: credible interval for effect size
-
----
-
-## Repository Structure
-
-```
-agriculture-monitoring-data-analysis/
-│
-├── README.md                          # This file
-├── requirements.txt                   # Python dependencies
-│
-├── data/
-│   ├── raw/
-│   │   ├── faostat_sri_lanka_rice_yield.csv      # Annual yield
-│   │   ├── Crop_data.csv                         # FAOSTAT crop data
-│   │   ├── Fertilizer_data.csv                   # Fertilizer use
-│   │   ├── Irrigation_data.csv                   # Irrigation area
-│   │   ├── nasa_power_sri_lanka_monthly.csv      # Climate data
-│   │   └── Pesticide_data.csv                    # Pesticide use
-│   │
-│   └── processed/
-│       ├── final_dataset.csv                      # Engineered features
-│       └── analysis_results.csv                   # LO1-LO6 metrics
-│
-├── notebooks/
-│   ├── 01_data_exploration.ipynb      # EDA: distributions, correlations
-│   ├── 02_descriptive_analysis.ipynb  # LO1: Probability distributions
-│   ├── 03_hypothesis_testing.ipynb    # LO2: Significance tests
-│   ├── 04_regression_model.ipynb      # LO3: Regression modeling
-│   ├── 05_time_series.ipynb           # LO5: ARIMA forecasting
-│   └── 06_bayesian_analysis.ipynb     # LO6: Posterior inference
-│
-├── src/
-│   ├── data_cleaning.py               # Load, validate, clean data
-│   ├── feature_engineering.py         # Create monitoring_index, etc.
-│   ├── modeling.py                    # Regression, time-series, Bayesian
-│   └── evaluation.py                  # Metrics, diagnostics
-│
-└── results/
-    ├── graphs/                        # EDA plots, model diagnostics
-    └── model_outputs/                 # Regression summaries, forecasts
-```
-
----
-
-## Key Features
-
-### 1. **Monitoring Index (Real Feature Engineering)**
-Replaces synthetic "monitoring_days" with:
-```python
-monitoring_index = (fertilizer_use_kg_ha + irrigation_area_ratio) / 2
-```
-Derived directly from FAOSTAT agricultural inputs.
-
-### 2. **Climate-Controlled Analysis**
-- Temperature and rainfall included as covariates
-- Isolates monitoring effect from climate confounding
-
-### 3. **Multi-Faceted Evidence**
-- Descriptive: Yield distribution by monitoring level
-- Inferential: Hypothesis tests with p-values
-- Predictive: Regression R² and time-series MAPE
-- Bayesian: Credible interval for monitoring benefit
-
----
-
-## Results Summary
-
-### Key Findings
-| Learning Outcome | Metric | Interpretation |
-|---|---|---|
-| **LO1** | Response Time Distribution | Normal fit with variability |
-| **LO2** | Hypothesis Test | Monitoring effect on yield |
-| **LO3** | Regression Coefficient | Positive yield impact |
-| **LO4** | Exponential Family | Climate data fit |
-| **LO5** | Time Series MAPE | Forecast accuracy ~7% |
-| **LO6** | Posterior Credible Interval | Effect size uncertainty |
-
-### Conclusion
-Monitoring has a **positive yield effect**, though with modest explanatory power due to limited sample size. **Recommend extending dataset to 10+ years and multiple regions for stronger inference.**
-
----
-
-## Technologies & Libraries
-
-| Purpose | Library |
-|---|---|
-| Data manipulation | Pandas |
-| Numerical computing | NumPy |
-| Visualization | Matplotlib, Seaborn |
-| Statistical modeling | StatsModels, Scikit-learn |
-| Notebooks | Jupyter |
-
----
-
-## How to Run
-
-### 1. Install Dependencies
-```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-### 2. Run Data Pipeline
-```bash
-python src/data_cleaning.py
-python src/feature_engineering.py
-```
-
-### 3. Run Analysis Notebooks
-```bash
-jupyter lab notebooks/
-```
-
-### 4. View Results
-```bash
-ls -la results/graphs/
-cat data/processed/analysis_results.csv
-```
-
----
-
-## Viva Defense
-
-> *"This project was redesigned from synthetic variables into a structured, production-quality data pipeline using verified FAOSTAT and NASA datasets. We replaced generic monitoring metrics with a real monitoring index engineered from fertilizer intensity and irrigation area—both derived directly from official FAO statistics. The pipeline follows a clean data → feature engineering → analysis → evaluation workflow, making every step reproducible. Across six learning outcomes, we provide descriptive, inferential, and predictive evidence that monitoring correlates with yield resilience, even after controlling for climate variables."*
-
----
-
-## License
-
-Educational use. Data sources: FAOSTAT (public), NASA POWER (public).
+This project demonstrates how statistical modelling and machine learning techniques can be applied to real-world agricultural systems to understand the relationship between farm monitoring practices and crop productivity. The results support the hypothesis that better monitoring contributes to improved agricultural outcomes under climate variability.
