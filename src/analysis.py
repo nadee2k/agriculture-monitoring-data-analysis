@@ -24,6 +24,8 @@ def mean(xs: list[float]) -> float:
 
 
 def variance(xs: list[float]) -> float:
+    if len(xs) <= 1:
+        return 0.0
     m = mean(xs)
     return sum((x - m) ** 2 for x in xs) / (len(xs) - 1)
 
@@ -73,45 +75,54 @@ def lo2_hypothesis_tests(demo: list[dict]) -> dict:
 def lo3_regression(demo: list[dict]) -> dict:
     x1 = [float(r["monitoring_days_per_month"]) for r in demo]
     x2 = [float(r["climate_risk_index"]) for r in demo]
+    x3 = [float(r.get("soil_quality_index", 1.0)) for r in demo]
+    x4 = [float(r.get("pest_management_score", 1.0)) for r in demo]
     y = [float(r["yield_loss_pct"]) for r in demo]
 
-    # Solve OLS for y = b0 + b1*x1 + b2*x2 via normal equations
+    # Solve OLS for y = b0 + b1*x1 + b2*x2 + b3*x3 + b4*x4 via normal equations
     n = len(y)
-    s_x1 = sum(x1)
-    s_x2 = sum(x2)
-    s_y = sum(y)
-    s_x1x1 = sum(v * v for v in x1)
-    s_x2x2 = sum(v * v for v in x2)
-    s_x1x2 = sum(a * b for a, b in zip(x1, x2))
-    s_x1y = sum(a * b for a, b in zip(x1, y))
-    s_x2y = sum(a * b for a, b in zip(x2, y))
+    X = [[1.0, a, b, c, d] for a, b, c, d in zip(x1, x2, x3, x4)]
+    
+    vars_count = 5
+    A = [[0.0] * vars_count for _ in range(vars_count)]
+    b = [0.0] * vars_count
+    
+    for i in range(vars_count):
+        for j in range(vars_count):
+            A[i][j] = sum(X[k][i] * X[k][j] for k in range(n))
+        b[i] = sum(X[k][i] * y[k] for k in range(n))
 
-    # Gaussian elimination for 3x3
-    A = [[n, s_x1, s_x2], [s_x1, s_x1x1, s_x1x2], [s_x2, s_x1x2, s_x2x2]]
-    b = [s_y, s_x1y, s_x2y]
-
-    for i in range(3):
-        pivot = A[i][i]
-        for j in range(i, 3):
+    # Gaussian elimination
+    for i in range(vars_count):
+        pivot = A[i][i] if A[i][i] != 0 else 1e-9
+        for j in range(i, vars_count):
             A[i][j] /= pivot
         b[i] /= pivot
-        for k in range(3):
+        for k in range(vars_count):
             if k == i:
                 continue
             factor = A[k][i]
-            for j in range(i, 3):
+            for j in range(i, vars_count):
                 A[k][j] -= factor * A[i][j]
             b[k] -= factor * b[i]
 
-    b0, b1, b2 = b
-    preds = [b0 + b1 * a + b2 * c for a, c in zip(x1, x2)]
+    b0, b1, b2, b3, b4 = b
+    preds = [b0 + b1 * row[1] + b2 * row[2] + b3 * row[3] + b4 * row[4] for row in X]
     y_bar = mean(y)
     ss_tot = sum((yy - y_bar) ** 2 for yy in y)
     ss_res = sum((yy - pp) ** 2 for yy, pp in zip(y, preds))
-    r2 = 1 - ss_res / ss_tot
+    r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
     mae = mean([abs(yy - pp) for yy, pp in zip(y, preds)])
 
-    return {"intercept": b0, "beta_monitoring": b1, "beta_climate_risk": b2, "r2": r2, "mae": mae}
+    return {
+        "intercept": b0,
+        "beta_monitoring": b1,
+        "beta_climate_risk": b2,
+        "beta_soil_quality": b3,
+        "beta_pest_management": b4,
+        "r2": r2,
+        "mae": mae
+    }
 
 
 def lo4_exponential_family(nasa: list[dict]) -> dict:
@@ -120,7 +131,7 @@ def lo4_exponential_family(nasa: list[dict]) -> dict:
 
     lam_exp = 1 / mean(rain)
     rain_count = [round(r) for r in rain]
-    lam_poi = mean(rain_count)
+    lam_poi = mean([float(x) for x in rain_count])
     return {
         "exponential_lambda": lam_exp,
         "poisson_lambda_proxy": lam_poi,
@@ -152,7 +163,7 @@ def lo6_bayesian(demo: list[dict]) -> dict:
     n = len(reg)
     a_post = 1 + success
     b_post = 1 + n - success
-
+    random.seed(2025)
 
     samples = [random.betavariate(a_post, b_post) for _ in range(20000)]
     samples.sort()
