@@ -137,8 +137,6 @@ def clean_and_aggregate_by_year() -> Dict[int, Dict]:
             year_dict[year]['precip_annual_mean'] = sum(climate_data['precips']) / len(climate_data['precips'])
     
     return year_dict
-    
-    return year_dict
 
 
 def write_cleaned_data(data: Dict) -> None:

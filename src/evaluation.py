@@ -49,8 +49,10 @@ def print_summary() -> None:
     
     # LO3
     print("\n[LO3] Regression Model:")
-    print(f"  Monitoring Index Coefficient: {results.get('LO3_regression.beta_monitoring_index', 'N/A')}")
-    print(f"  Climate Risk Coefficient: {results.get('LO3_regression.beta_climate_risk', 'N/A')}")
+    print(f"  Fertilizer (log) Coefficient: {results.get('LO3_regression.beta_fertilizer_log', 'N/A')}")
+    print(f"  Irrigation Coefficient: {results.get('LO3_regression.beta_irrigation', 'N/A')}")
+    print(f"  Rainfall Coefficient: {results.get('LO3_regression.beta_rainfall', 'N/A')}")
+    print(f"  Temperature Coefficient: {results.get('LO3_regression.beta_temperature', 'N/A')}")
     print(f"  R-squared: {results.get('LO3_regression.r_squared', 'N/A')}")
     print(f"  MAE: {results.get('LO3_regression.mae', 'N/A')}")
     

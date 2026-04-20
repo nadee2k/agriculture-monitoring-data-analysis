@@ -88,71 +88,64 @@ def lo2_hypothesis_tests(data: List[Dict]) -> Dict:
 
 
 def lo3_regression(data: List[Dict]) -> Dict:
-    """LO3: Regression model: yield_loss ~ monitoring_index + climate_risk."""
-    x1_vals = []  # monitoring_index
-    x2_vals = []  # climate_risk_index
-    y_vals = []   # yield_loss_pct
+    """LO3: Regression model: yield_loss ~ fertilizer + irrigation + rainfall + temperature."""
+    import numpy as np
+    import statsmodels.api as sm
+    
+    # Prepare data
+    X_data = []
+    y_data = []
     
     for row in data:
         try:
-            x1 = float(row.get('monitoring_index', 0))
-            x2 = float(row.get('climate_risk_index', 0))
-            y = float(row.get('yield_loss_pct', 0))
-            x1_vals.append(x1)
-            x2_vals.append(x2)
-            y_vals.append(y)
+            fertilizer = float(row.get('fertilizer_tonnes', 0))
+            irrigation = float(row.get('irrigation_area_ha', 0))
+            rainfall = float(row.get('precip_annual_mean', 0))
+            temperature = float(row.get('temp_annual_mean', 0))
+            yield_loss = float(row.get('yield_loss_pct', 0))
+            
+            # Log transform fertilizer if positive
+            fertilizer_log = np.log(fertilizer) if fertilizer > 0 else 0
+            
+            X_data.append([fertilizer_log, irrigation, rainfall, temperature])
+            y_data.append(yield_loss)
         except (ValueError, TypeError):
             continue
     
-    if len(x1_vals) < 3:
+    if len(X_data) < 5:  # Need more data points for 4 variables
         return {"error": "Insufficient data for regression"}
     
-    n = len(y_vals)
-    sum_x1 = sum(x1_vals)
-    sum_x2 = sum(x2_vals)
-    sum_y = sum(y_vals)
-    sum_x1x1 = sum(v ** 2 for v in x1_vals)
-    sum_x2x2 = sum(v ** 2 for v in x2_vals)
-    sum_x1x2 = sum(a * b for a, b in zip(x1_vals, x2_vals))
-    sum_x1y = sum(a * b for a, b in zip(x1_vals, y_vals))
-    sum_x2y = sum(a * b for a, b in zip(x2_vals, y_vals))
+    # Convert to numpy arrays
+    X = np.array(X_data)
+    y = np.array(y_data)
     
-    # Normal equations: solve 3x3 system
-    det = (n * (sum_x1x1 * sum_x2x2 - sum_x1x2 ** 2) - 
-           sum_x1 * (sum_x1 * sum_x2x2 - sum_x1x2 * sum_x2) + 
-           sum_x2 * (sum_x1 * sum_x1x2 - sum_x1x1 * sum_x2))
+    # Add constant for intercept
+    X = sm.add_constant(X)
     
-    if abs(det) < 1e-10:
-        return {"error": "Singular matrix in regression"}
-    
-    # Solve for intercept, beta1, beta2
-    b0 = ((sum_y * (sum_x1x1 * sum_x2x2 - sum_x1x2 ** 2) - 
-           sum_x1y * (sum_x1 * sum_x2x2 - sum_x1x2 * sum_x2) + 
-           sum_x2y * (sum_x1 * sum_x1x2 - sum_x1x1 * sum_x2)) / det)
-    
-    b1 = ((n * (sum_x1y * sum_x2x2 - sum_x2y * sum_x1x2) - 
-           sum_x1 * (sum_y * sum_x2x2 - sum_x2y * sum_x2) + 
-           sum_x2 * (sum_y * sum_x1x2 - sum_x1y * sum_x2)) / det)
-    
-    b2 = ((n * (sum_x1x1 * sum_x2y - sum_x1y * sum_x1x2) - 
-           sum_x1 * (sum_x1 * sum_x2y - sum_x1y * sum_x2) + 
-           sum_y * (sum_x1 * sum_x1x2 - sum_x1x1 * sum_x2)) / det)
-    
-    # Predictions and R²
-    preds = [b0 + b1 * a + b2 * c for a, c in zip(x1_vals, x2_vals)]
-    y_mean = sum_y / n
-    ss_tot = sum((y - y_mean) ** 2 for y in y_vals)
-    ss_res = sum((y - p) ** 2 for y, p in zip(y_vals, preds))
-    r2 = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0
-    mae = sum(abs(y - p) for y, p in zip(y_vals, preds)) / n
-    
-    return {
-        "intercept": round(b0, 6),
-        "beta_monitoring_index": round(b1, 6),
-        "beta_climate_risk": round(b2, 6),
-        "r_squared": round(r2, 6),
-        "mae": round(mae, 6),
-    }
+    # Fit OLS model
+    try:
+        model = sm.OLS(y, X).fit()
+        
+        # Extract results
+        intercept = model.params[0]
+        beta_fertilizer = model.params[1]
+        beta_irrigation = model.params[2]
+        beta_rainfall = model.params[3]
+        beta_temperature = model.params[4]
+        r_squared = model.rsquared
+        mae = np.mean(np.abs(model.resid))
+        
+        return {
+            "intercept": round(intercept, 6),
+            "beta_fertilizer_log": round(beta_fertilizer, 6),
+            "beta_irrigation": round(beta_irrigation, 6),
+            "beta_rainfall": round(beta_rainfall, 6),
+            "beta_temperature": round(beta_temperature, 6),
+            "r_squared": round(r_squared, 6),
+            "mae": round(mae, 6),
+        }
+    except Exception as e:
+        return {"error": f"Regression failed: {str(e)}"}
 
 
 def lo5_time_series(data: List[Dict]) -> Dict:

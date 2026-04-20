@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-python src/data_collection.py
-python src/analysis.py
+python src/data_cleaning.py
+python src/feature_engineering.py
+python src/modeling.py
+python src/evaluation.py
 
 echo
 echo "Done. Generated files:"
-echo "- data/raw/"
-echo "- data/processed/analysis_results.csv"
-echo "- reports/key_results.md"
-echo "- reports/assignment_submission.md"
-
-echo
-echo "Top 10 lines of analysis results:"
-head -n 10 data/processed/analysis_results.csv
+echo "- data/processed/cleaned_annual.csv"
+echo "- data/processed/final_dataset.csv"
+echo "- results/model_outputs/modeling_results.csv"
+echo "- results/graphs/"
