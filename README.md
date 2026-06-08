@@ -87,7 +87,7 @@ Final merged dataset:
   * Regular: 83.3%
   * Irregular: 0%
 
-* Welch’s t-test:
+* Welch's t-test:
 
   * t ≈ -0.37, p > 0.05
 
@@ -100,9 +100,7 @@ Monitoring shows **clear practical improvement**, but statistical significance i
 
 Model: OLS Regression
 
-[
-YieldLoss = \beta_0 + \beta_1\log(Fertilizer) + \beta_2(Irrigation) + \beta_3(Rainfall) + \beta_4(Temperature) + \epsilon
-]
+YieldLoss = β₀ + β₁log(Fertilizer) + β₂(Irrigation) + β₃(Rainfall) + β₄(Temperature) + ε
 
 | Variable           | Coefficient | Interpretation (in current model)                 |
 | ------------------ | ----------- | ------------------------------------------------- |
@@ -112,10 +110,8 @@ YieldLoss = \beta_0 + \beta_1\log(Fertilizer) + \beta_2(Irrigation) + \beta_3(Ra
 | Rainfall           | -1.328369   | Higher annual rainfall is linked to lower loss    |
 | Temperature        | -0.989384   | Higher annual temperature is linked to lower loss |
 
-
 * R² ≈ 0.194
 * MAE ≈ 3.82
-
 
 📌 Insight:
 Model captures part of the variation in yield loss, but **explanatory power is still modest and likely affected by omitted variables and small sample size**.
@@ -218,7 +214,7 @@ This project demonstrates that:
 
 > **Agricultural monitoring systems contribute to improved resilience against yield loss, even under climate stress.**
 
-While statistical strength is moderate, **consistent directional evidence across multiple methods** supports the value of monitoring systems in Sri Lanka’s rice sector.
+While statistical strength is moderate, **consistent directional evidence across multiple methods** supports the value of monitoring systems in Sri Lanka's rice sector.
 
 ---
 
